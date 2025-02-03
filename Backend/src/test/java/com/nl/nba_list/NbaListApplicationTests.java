@@ -1,10 +1,10 @@
-package com.eco.e_co;
+package com.nl.nba_list;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ECommerApplicationTests {
+class NbaListApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,13 +1,13 @@
-package com.eco.e_co;
+package com.nl.nba_list;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ECommerApplication {
+public class NbaListApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ECommerApplication.class, args);
+		SpringApplication.run(NbaListApplication.class, args);
 	}
 
 }

@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
+		<version>3.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.eco</groupId>
-	<artifactId>e-co</artifactId>
+	<groupId>com.nl</groupId>
+	<artifactId>nba-list</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>e-commer</name>
-	<description>Spring boot for an e-commerce</description>
+	<name>NbaList</name>
+	<description>NBA players list</description>
 	<url/>
 	<licenses>
 		<license/>
