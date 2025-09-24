@@ -3,14 +3,16 @@
  * Fournit des méthodes pour récupérer et filtrer les joueurs en fonction de divers critères.
  */
 
-package com.nl.player;
+package com.nl.nba_list.service;
 
 import org.springframework.stereotype.Component;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+
+import com.nl.nba_list.model.Player;
+import com.nl.nba_list.model.PlayerFilterCriteria;
+import com.nl.nba_list.repository.PlayerRepository;
 
 @Component
 public class PlayerService {
@@ -23,6 +25,46 @@ public class PlayerService {
 
     public List<Player> getPlayers() {
         return playerRepository.findAll();
+    }
+
+    /**
+     * Nouvelle méthode pour filtrer avec plusieurs critères simultanément
+     */
+    public List<Player> getFilteredPlayers(PlayerFilterCriteria criteria) {
+        // Si aucun filtre n'est défini, retourner tous les joueurs
+        if (criteria.hasNoFilters()) {
+            return playerRepository.findAll();
+        }
+
+        // Appliquer tous les filtres de manière chaînée
+        return playerRepository.findAll().stream()
+            .filter(player -> criteria.getTeamName() == null || 
+                    (player.getTeam_name() != null && player.getTeam_name().toLowerCase().contains(criteria.getTeamName().toLowerCase())))
+            .filter(player -> criteria.getLastName() == null || 
+                    (player.getPlayer_last_name() != null && player.getPlayer_last_name().toLowerCase().contains(criteria.getLastName().toLowerCase())))
+            .filter(player -> criteria.getFirstName() == null || 
+                    (player.getPlayer_first_name() != null && player.getPlayer_first_name().toLowerCase().contains(criteria.getFirstName().toLowerCase())))
+            .filter(player -> criteria.getNation() == null || 
+                    (player.getNation() != null && player.getNation().toLowerCase().contains(criteria.getNation().toLowerCase())))
+            .filter(player -> criteria.getPosition() == null || 
+                    (player.getPos() != null && player.getPos().toLowerCase().contains(criteria.getPosition().toLowerCase())))
+            .filter(player -> criteria.getCollege() == null || 
+                    (player.getCollege() != null && player.getCollege().toLowerCase().contains(criteria.getCollege().toLowerCase())))
+            .filter(player -> criteria.getCountry() == null || 
+                    (player.getCountry() != null && player.getCountry().toLowerCase().contains(criteria.getCountry().toLowerCase())))
+            .filter(player -> criteria.getAge() == null || 
+                    (player.getAge() != null && player.getAge().equals(criteria.getAge())))
+            .filter(player -> criteria.getJerseyNumber() == null || 
+                    (player.getJersey_number() != null && player.getJersey_number().equals(criteria.getJerseyNumber())))
+            .filter(player -> criteria.getTeamCity() == null || 
+                    (player.getTeam_city() != null && player.getTeam_city().toLowerCase().contains(criteria.getTeamCity().toLowerCase())))
+            .filter(player -> criteria.getHeight() == null || 
+                    (player.getHeight() != null && player.getHeight().equals(criteria.getHeight())))
+            .filter(player -> criteria.getWeight() == null || 
+                    (player.getWeight() != null && player.getWeight().equals(criteria.getWeight())))
+            .filter(player -> criteria.getDraftYear() == null || 
+                    (player.getDraft_year() != null && player.getDraft_year().equals(criteria.getDraftYear())))
+            .toList();
     }
 
     public List<Player> getPlayersFromTeam(String teamName){
@@ -126,13 +168,13 @@ public class PlayerService {
         return player;
     }
 
-    public void deletePlayer(String playerName) {
-        playerRepository.deleteByName(playerName);
+    public void deletePlayer(String playerLastName) {
+        playerRepository.deleteByPlayerLastName(playerLastName);
     }
 
     public Player updatePlayer(Player player) {
         if(playerRepository.findByPersonId(player.getPerson_id()) != null) {
-            playerRepository.deleteById(player.getPerson_id().toString());
+            playerRepository.deleteByPlayerLastName(player.getPlayer_last_name());
             return addPlayer(player);
         }
 

@@ -1,4 +1,4 @@
-package com.nl.player;
+package com.nl.nba_list.controller;
 
 import java.util.List;
 
@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.nl.nba_list.model.Player;
+import com.nl.nba_list.model.PlayerFilterCriteria;
+import com.nl.nba_list.service.PlayerService;
 
 @RestController
 @RequestMapping("/players")
@@ -33,25 +37,32 @@ public class PlayerController {
         @RequestParam(required = false) String nation,
         @RequestParam(required = false) String position,
         @RequestParam(required = false) String college,
-        @RequestParam(required = false) String country
+        @RequestParam(required = false) String country,
+        @RequestParam(required = false) Integer age,
+        @RequestParam(required = false) Integer jerseyNumber,
+        @RequestParam(required = false) String teamCity,
+        @RequestParam(required = false) String height,
+        @RequestParam(required = false) Double weight,
+        @RequestParam(required = false) Integer draftYear
     ) {
-        if (teamName != null) {
-            return playerService.getPlayersFromTeam(teamName);
-        } else if (lastName != null) {
-            return playerService.getPlayerByLastName(lastName);
-        } else if (firstName != null) {
-            return playerService.getPlayerByFirstName(firstName);
-        } else if (nation != null) {
-            return playerService.getPlayerByNation(nation);
-        } else if (position != null) {
-            return playerService.getPlayerByPosition(position);
-        } else if (college != null) {
-            return playerService.getPlayerByCollege(college);
-        } else if (country != null) {
-            return playerService.getPlayerByCountry(country);
-        } else {
-            return playerService.getPlayers();
-        }
+        // Créer un objet de critères de filtre
+        PlayerFilterCriteria criteria = PlayerFilterCriteria.builder()
+                .teamName(teamName)
+                .lastName(lastName)
+                .firstName(firstName)
+                .nation(nation)
+                .position(position)
+                .college(college)
+                .country(country)
+                .age(age)
+                .jerseyNumber(jerseyNumber)
+                .teamCity(teamCity)
+                .height(height)
+                .weight(weight)
+                .draftYear(draftYear)
+                .build();
+                
+        return playerService.getFilteredPlayers(criteria);
     }
 
     @PostMapping

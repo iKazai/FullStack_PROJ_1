@@ -1,12 +1,14 @@
-package com.nl.player;
+package com.nl.nba_list.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 
 @Entity
 @Table(name = "players_table")
 public class Player {
+    @Id
     @Column(name = "person_id", unique= true)
     private Integer person_id;
 
