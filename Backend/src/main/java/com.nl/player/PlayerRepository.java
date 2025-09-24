@@ -1,12 +1,14 @@
 package com.nl.player;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface PlayerRepository extends JpaRepository, String> {
+public interface PlayerRepository extends JpaRepository<Player, String> {
     void deleteByName(String playerName);
     Optional<Player> findByPersonId(Integer person_id);
-    List<Player> findByTeamName(String team_name);
     List<Player> findByTeamSlug(String team_slug);
     List<Player> findByTeamId(Integer team_id);
     List<Player> findByPlayerLastName(String player_last_name);

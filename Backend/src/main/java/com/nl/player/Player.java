@@ -2,6 +2,7 @@ package com.nl.player;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "players_table")
@@ -16,7 +17,6 @@ public class Player {
     private Integer team_id;
     private String pos;
     private Integer jersey_number;
-    private String team_name;
     private String team_slug;
     private String height;
     private Double weight;
@@ -43,7 +43,7 @@ public class Player {
     public Player() {
     }
 
-    public Player(String person_id,
+    public Player(Integer person_id,
                     String player_last_name,
                     String player_first_name,
                     String nation,
@@ -60,7 +60,6 @@ public class Player {
                     Integer draft_year,
                     Integer is_defunct,
                     String team_city,
-                    String team_name,
                     String team_abbrevation,
                     Integer draft_round,
                     Integer draft_number,
