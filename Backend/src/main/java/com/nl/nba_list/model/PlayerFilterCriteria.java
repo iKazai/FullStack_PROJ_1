@@ -7,11 +7,9 @@ public class PlayerFilterCriteria {
     private String teamName;
     private String lastName;
     private String firstName;
-    private String nation;
     private String position;
     private String college;
     private String country;
-    private Integer age;
     private Integer jerseyNumber;
     private String teamCity;
     private String height;
@@ -23,11 +21,9 @@ public class PlayerFilterCriteria {
         this.teamName = builder.teamName;
         this.lastName = builder.lastName;
         this.firstName = builder.firstName;
-        this.nation = builder.nation;
         this.position = builder.position;
         this.college = builder.college;
         this.country = builder.country;
-        this.age = builder.age;
         this.jerseyNumber = builder.jerseyNumber;
         this.teamCity = builder.teamCity;
         this.height = builder.height;
@@ -45,11 +41,9 @@ public class PlayerFilterCriteria {
         private String teamName;
         private String lastName;
         private String firstName;
-        private String nation;
         private String position;
         private String college;
         private String country;
-        private Integer age;
         private Integer jerseyNumber;
         private String teamCity;
         private String height;
@@ -71,11 +65,6 @@ public class PlayerFilterCriteria {
             return this;
         }
 
-        public Builder nation(String nation) {
-            this.nation = nation;
-            return this;
-        }
-
         public Builder position(String position) {
             this.position = position;
             return this;
@@ -88,11 +77,6 @@ public class PlayerFilterCriteria {
 
         public Builder country(String country) {
             this.country = country;
-            return this;
-        }
-
-        public Builder age(Integer age) {
-            this.age = age;
             return this;
         }
 
@@ -129,8 +113,8 @@ public class PlayerFilterCriteria {
     // Méthode pour vérifier si aucun filtre n'est défini
     public boolean hasNoFilters() {
         return teamName == null && lastName == null && firstName == null && 
-               nation == null && position == null && college == null && 
-               country == null && age == null && jerseyNumber == null && 
+               position == null && college == null && 
+               country == null && jerseyNumber == null && 
                teamCity == null && height == null && weight == null && draftYear == null;
     }
 
@@ -138,11 +122,9 @@ public class PlayerFilterCriteria {
     public String getTeamName() { return teamName; }
     public String getLastName() { return lastName; }
     public String getFirstName() { return firstName; }
-    public String getNation() { return nation; }
     public String getPosition() { return position; }
     public String getCollege() { return college; }
     public String getCountry() { return country; }
-    public Integer getAge() { return age; }
     public Integer getJerseyNumber() { return jerseyNumber; }
     public String getTeamCity() { return teamCity; }
     public String getHeight() { return height; }

@@ -14,32 +14,25 @@ public class Player {
 
     private String player_last_name;
     private String player_first_name;
-    private String nation;
-    private Integer age;
     private Integer team_id;
-    private String pos;
+    private String position;  // Remplace 'pos'
     private Integer jersey_number;
     private String team_slug;
     private String height;
     private Double weight;
     private String college;
-    private String country;
+    private String country;  // Gardé, remplace 'nation'
     private Integer draft_year;
     private Integer is_defunct;
     private String team_city;
     private String team_name;
-    private String team_abbrevation;
     private Integer draft_round;
     private Integer draft_number;
-    private Integer roster_status;
     private Integer from_year;
     private Integer to_year;
     private Double pts;
     private Double reb;
     private Double ast;
-    private String stat_timeframe;
-    private String player_last_initial;
-    private String historic;
 
 
     public Player() {
@@ -48,10 +41,8 @@ public class Player {
     public Player(Integer person_id,
                     String player_last_name,
                     String player_first_name,
-                    String nation,
-                    Integer age,
                     Integer team_id,
-                    String pos,
+                    String position,
                     Integer jersey_number,
                     String team_name,
                     String team_slug,
@@ -62,25 +53,18 @@ public class Player {
                     Integer draft_year,
                     Integer is_defunct,
                     String team_city,
-                    String team_abbrevation,
                     Integer draft_round,
                     Integer draft_number,
-                    Integer roster_status,
                     Integer from_year,
                     Integer to_year,
                     Double pts,
                     Double reb,
-                    Double ast,
-                    String stat_timeframe,
-                    String player_last_initial,
-                    String historic) {
+                    Double ast) {
             this.person_id = person_id;
             this.player_last_name = player_last_name;
             this.player_first_name = player_first_name;
-            this.nation = nation;
-            this.age = age;
             this.team_id = team_id;
-            this.pos = pos;
+            this.position = position;
             this.jersey_number = jersey_number;
             this.team_name = team_name;
             this.team_slug = team_slug;
@@ -91,19 +75,13 @@ public class Player {
             this.draft_year = draft_year;
             this.is_defunct = is_defunct;
             this.team_city = team_city;
-            this.team_name = team_name;
-            this.team_abbrevation = team_abbrevation;
             this.draft_round = draft_round;
             this.draft_number = draft_number;
-            this.roster_status = roster_status;
             this.from_year = from_year;
             this.to_year = to_year;
             this.pts = pts;
             this.reb = reb;
             this.ast = ast;
-            this.stat_timeframe = stat_timeframe;
-            this.player_last_initial = player_last_initial;
-            this.historic = historic;
     }
 
     public Integer getPerson_id() { return person_id; }
@@ -115,17 +93,11 @@ public class Player {
     public String getPlayer_first_name() { return player_first_name; }
     public void setPlayer_first_name(String player_first_name) { this.player_first_name = player_first_name; }
 
-    public String getNation() { return nation; }
-    public void setNation(String nation) { this.nation = nation; }
-
-    public Integer getAge() { return age; }
-    public void setAge(Integer age) { this.age = age; }
-
     public Integer getTeam_id() { return team_id; }
     public void setTeam_id(Integer team_id) { this.team_id = team_id; }
 
-    public String getPos() { return pos; }
-    public void setPos(String pos) { this.pos = pos; }
+    public String getPosition() { return position; }
+    public void setPosition(String position) { this.position = position; }
 
     public Integer getJersey_number() { return jersey_number; }
     public void setJersey_number(Integer jersey_number) { this.jersey_number = jersey_number; }
@@ -157,17 +129,11 @@ public class Player {
     public String getTeam_city() { return team_city; }
     public void setTeam_city(String team_city) { this.team_city = team_city; }
 
-    public String getTeam_abbrevation() { return team_abbrevation; }
-    public void setTeam_abbrevation(String team_abbrevation) { this.team_abbrevation = team_abbrevation; }
-
     public Integer getDraft_round() { return draft_round; }
     public void setDraft_round(Integer draft_round) { this.draft_round = draft_round; }
 
     public Integer getDraft_number() { return draft_number; }
     public void setDraft_number(Integer draft_number) { this.draft_number = draft_number; }
-
-    public Integer getRoster_status() { return roster_status; }
-    public void setRoster_status(Integer roster_status) { this.roster_status = roster_status; }
 
     public Integer getFrom_year() { return from_year; }
     public void setFrom_year(Integer from_year) { this.from_year = from_year; }
@@ -183,18 +149,4 @@ public class Player {
 
     public Double getAst() { return ast; }
     public void setAst(Double ast) { this.ast = ast; }
-
-    public String getStat_timeframe() { return stat_timeframe; }
-    public void setStat_timeframe(String stat_timeframe) { this.stat_timeframe = stat_timeframe; }
-
-    public String getPlayer_last_initial() { return player_last_initial; }
-    public void setPlayer_last_initial(String player_last_initial) { this.player_last_initial = player_last_initial; }
-
-    public String getHistoric() { return historic; }
-    public void setHistoric(String historic) { this.historic = historic; }
-
-
-
-
-    
 }

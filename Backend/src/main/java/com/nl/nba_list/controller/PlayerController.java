@@ -34,11 +34,9 @@ public class PlayerController {
         @RequestParam(required = false) String teamName,
         @RequestParam(required = false) String lastName,
         @RequestParam(required = false) String firstName,
-        @RequestParam(required = false) String nation,
         @RequestParam(required = false) String position,
         @RequestParam(required = false) String college,
         @RequestParam(required = false) String country,
-        @RequestParam(required = false) Integer age,
         @RequestParam(required = false) Integer jerseyNumber,
         @RequestParam(required = false) String teamCity,
         @RequestParam(required = false) String height,
@@ -50,11 +48,9 @@ public class PlayerController {
                 .teamName(teamName)
                 .lastName(lastName)
                 .firstName(firstName)
-                .nation(nation)
                 .position(position)
                 .college(college)
                 .country(country)
-                .age(age)
                 .jerseyNumber(jerseyNumber)
                 .teamCity(teamCity)
                 .height(height)
