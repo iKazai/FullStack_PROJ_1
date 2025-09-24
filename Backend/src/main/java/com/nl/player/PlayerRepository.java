@@ -25,7 +25,6 @@ public interface PlayerRepository extends JpaRepository<Player, String> {
     List<Player> findByIsDefunct(Integer is_defunct);
     List<Player> findByTeamCity(String team_city);
     List<Player> findByTeamName(String team_name);
-    List<Player> findByTeamAbbrevation(String team_abbrevation);
     List<Player> findByDraftRound(Integer draft_round);
     List<Player> findByDraftNumber(Integer draft_number);
     List<Player> findByRosterStatus(Integer roster_status);
@@ -34,7 +33,4 @@ public interface PlayerRepository extends JpaRepository<Player, String> {
     List<Player> findByPts(Double pts);
     List<Player> findByReb(Double reb);
     List<Player> findByAst(Double ast);
-    List<Player> findByStatTimeframe(String stat_timeframe);
-    List<Player> findByPlayerLastInitial(String player_last_initial);
-    List<Player> findByHistoric(String historic);  
 }
