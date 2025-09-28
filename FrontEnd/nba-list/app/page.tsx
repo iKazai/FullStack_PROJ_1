@@ -1,103 +1,280 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { NbaTeams, Positions, Heights, CollegeTeams, Countries, Weights } from "./PlayerData";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [focused, setFocused] = useState(false);
+  const [searching, setSearching] = useState("");
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
+  const [selectedDraftYear, setSelectedDraftYear] = useState<string[]>([]);
+  const [selectedJerseyNumber, setSelectedJerseyNumber] = useState<string[]>([]);
+  const [selectedHeight, setSelectedHeight] = useState<string[]>([]);
+  const [selectedWeight, setSelectedWeight] = useState<number[]>([]);
+  const [selectedCollege, setSelectedCollege] = useState<string[]>([]);
+  const [selectedPosition, setSelectedPosition] = useState<string[]>([]);
+  const [teamSearch, setTeamSearch] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-5">
+      <header className="w-full">
+        <nav className="flex flex-row justify-between items-center h-16 w-full">
+          <h1 className="text-4xl font-extrabold">
+              NBA LIST
+          </h1>
+          
+          <div
+            className={`flex items-center transition-all duration-300 ${
+              focused ? "rounded-xl px-2" : ""
+            }`}
+            onMouseEnter={() => setFocused(true)}
+            onMouseLeave={() => {
+              if (searching === "") { 
+                setFocused(false);
+              }
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            {!focused ? (
+              <MagnifyingGlassIcon 
+                className="h-5 w-5 text-gray-400 cursor-pointer"
+                onClick={() => setFocused(true)}
+              />
+            ) : (
+              <input
+                autoFocus
+                className="pl-2 p-1 rounded-xl transition-all duration-300 w-48 bg-white border border-gray-400"
+                placeholder="Search a player"
+                onBlur={() => {
+                  if (searching === "") {
+                    setFocused(false);
+                  } else {
+                    setFocused(true);
+                  }
+                }}
+                value={searching}
+                onChange={e => setSearching(e.target.value)}
+              />
+            )}
+          </div>
+        </nav>
+
+        {/* Filter */}
+        <div className="mt-4 flex flex-row justify-start gap-4">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-xl">Filter by teams</h1>
+              <div>
+                <input
+                  autoFocus
+                  placeholder="Search a team"
+                  className="border-1 p-1"
+                  value={teamSearch}
+                  onChange={e =>
+                    setTeamSearch(NbaTeams.filter((team => team.includes(e.target.value))))
+                  }
+                />
+              </div>
+               <div className="flex flex-col h-[150px] overflow-auto">
+              {NbaTeams.filter(team => team.toLowerCase().includes(teamSearch.toLowerCase())).map(team => 
+                <button 
+                  key={team}
+                  className={`p-1 cursor-pointer text-left text-m transition-colors
+                    ${selectedTeams.includes(team)
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                  `}
+                  onClick={() => {
+                    if (selectedTeams.includes(team)) {
+                      setSelectedTeams(selectedTeams.filter(t => t !== team));
+                    } else {
+                      setSelectedTeams([...selectedTeams, team]);
+                    }
+                  }}
+                >
+                  {team}
+                </button>
+              )}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-xl">Filter by Countries</h1>
+               <div className="flex flex-col h-[150px] overflow-auto">
+              {Countries.map(country => 
+                <button 
+                  key={country}
+                  className={`p-1 cursor-pointer text-left text-m transition-colors
+                    ${selectedCountry.includes(country)
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                  `}
+                  onClick={() => {
+                    if (selectedCountry.includes(country)) {
+                      setSelectedCountry(selectedCountry.filter(t => t !== country));
+                    } else {
+                      setSelectedCountry([...selectedCountry, country]);
+                    }
+                  }}
+                >
+                  {country}
+                </button>
+              )}
+              </div>
+              </div>
+
+              <div className="flex flex-col">
+                <h1 className="text-xl">Filter by Positions</h1>
+                 <div className="flex flex-col h-[150px] overflow-auto">
+                {Object.entries(Positions).map(([key, value]) => 
+                  <button 
+                    key={key}
+                    className={`p-1 cursor-pointer text-left text-m transition-colors
+                      ${selectedPosition.includes(key)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                    `}
+                    onClick={() => {
+                      if (selectedPosition.includes(key)) {
+                        setSelectedPosition(selectedPosition.filter(t => t !== key));
+                      } else {
+                        setSelectedPosition([...selectedPosition, key]);
+                      }
+                    }}
+                  >
+                    {value}
+                  </button>
+                )}
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl">Filter by Heights</h1>
+                <div className="flex flex-col h-[150px] overflow-auto">
+                {Heights.map(height => 
+                  <button 
+                    key={height}
+                    className={`p-1 cursor-pointer text-left text-m transition-colors
+                      ${selectedHeight.includes(height)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                    `}
+                    onClick={() => {
+                      if (selectedHeight.includes(height)) {
+                        setSelectedHeight(selectedHeight.filter(t => t !== height));
+                      } else {
+                        setSelectedHeight([...selectedHeight, height]);
+                      }
+                    }}
+                  >
+                    {height}
+                  </button>
+                )}
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl">Filter by Weights</h1>
+                <div className="flex flex-col h-[150px] overflow-auto">
+                {Weights.map(weight => 
+                  <button 
+                    key={weight}
+                    className={`p-1 cursor-pointer text-left text-m transition-colors
+                      ${selectedWeight.includes(weight)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                    `}
+                    onClick={() => {
+                      if (selectedWeight.includes(weight)) {
+                        setSelectedWeight(selectedWeight.filter(t => t !== weight));
+                      } else {
+                        setSelectedWeight([...selectedWeight, weight]);
+                      }
+                    }}
+                    >
+                    {weight}
+                  </button>
+                )}
+                </div>
+              </div>
+              <div>
+                <h1 className="text-xl">Filter by Colleges</h1>
+                <div className="flex flex-col h-[150px] overflow-auto">
+                {CollegeTeams.map(college => 
+                  <button 
+                    key={college}
+                    className={`p-1 cursor-pointer text-left text-m transition-colors
+                      ${selectedCollege.includes(college)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                    `}
+                    onClick={() => {
+                      if (selectedCollege.includes(college)) {
+                        setSelectedCollege(selectedCollege.filter(t => t !== college));
+                      } else {
+                        setSelectedCollege([...selectedCollege, college]);
+                      }
+                    }}
+                  >
+                    {college}
+                  </button>
+                )}
+                </div>
+              </div>
+                <div className="flex flex-col">
+                  <h1 className="text-xl">Filter by Jersey Numbers</h1>
+                   <div className="flex flex-col h-[150px] overflow-auto">
+                  {Array.from({ length: 100 }, (_, i) => {
+                    const num = String(i);
+                    return (
+                      <button
+                        key={num}
+                        className={`p-1 cursor-pointer text-left text-m transition-colors
+                          ${selectedJerseyNumber.includes(num)
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                        `}
+                        onClick={() => {
+                          if (selectedJerseyNumber.includes(num)) {
+                            setSelectedJerseyNumber(selectedJerseyNumber.filter(t => t !== num));
+                          } else {
+                            setSelectedJerseyNumber([...selectedJerseyNumber, num]);
+                          }
+                        }}
+                      >
+                        {num}
+                      </button>
+                    );
+                  })}
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <h1 className="text-xl">Filter by Draft Years</h1>
+                   <div className="flex flex-col h-[150px] overflow-auto">
+                  {Array.from({ length: 2022 - 2008 + 1 }, (_, i) => {
+                    const year = String(2008 + i);
+                    return (
+                      <button
+                        key={year}
+                        className={`p-1 cursor-pointer text-left text-m transition-colors
+                          ${selectedDraftYear.includes(year)
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
+                        `}
+                        onClick={() => {
+                          if (selectedDraftYear.includes(year)) {
+                            setSelectedDraftYear(selectedDraftYear.filter(t => t !== year));
+                          } else {
+                            setSelectedDraftYear([...selectedDraftYear, year]);
+                          }
+                        }}
+                      >
+                        {year}
+                      </button>
+                    );
+                  })}
+                  </div>
+                </div>
+              
+          </div>
+      </header>
+    </main>
   );
 }
