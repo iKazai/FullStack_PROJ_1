@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { NbaTeams, Positions, Heights, CollegeTeams, Countries, Weights } from "./PlayerData";
+import { FilterSection } from "./components/FilterSection"; 
+import { fetchPlayers, type Player } from "../lib/api";
 
 export default function Home() {
   const [focused, setFocused] = useState(false);
-  const [searching, setSearching] = useState("");
+  const [NameSearching, setNameSearching] = useState("");
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
   const [selectedDraftYear, setSelectedDraftYear] = useState<string[]>([]);
@@ -14,10 +16,70 @@ export default function Home() {
   const [selectedWeight, setSelectedWeight] = useState<number[]>([]);
   const [selectedCollege, setSelectedCollege] = useState<string[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]);
-  const [teamSearch, setTeamSearch] = useState("");
+
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fonction générique pour gérer la sélection/désélection d'un item
+  const handleSelection = <T extends string | number>(
+    setter: React.Dispatch<React.SetStateAction<T[]>>,
+    currentSelection: T[],
+    item: T
+  ) => {
+    if (currentSelection.includes(item)) {
+      setter(currentSelection.filter(i => i !== item));
+    } else {
+      setter([...currentSelection, item]);
+    }
+  };
+
+  // draft_year go from 2008 to 2022
+  const jerseyNumbers = useMemo(() => Array.from({ length: 100 }, (_, i) => String(i)), []);
+  // jersey_number : 0 to 99
+  const draftYears = useMemo(() => Array.from({ length: 2022 - 2008 + 1 }, (_, i) => String(2008 + i)), []);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const params: Record<string, string | number | undefined> = {
+          teamName: selectedTeams[0],
+          lastName: NameSearching || undefined,
+          firstName: undefined, // could be set if you split first/last names
+          position: selectedPosition[0],
+          college: selectedCollege[0],
+          country: selectedCountry[0],
+          jerseyNumber: selectedJerseyNumber[0] ? parseInt(selectedJerseyNumber[0], 10) : undefined,
+          teamCity: undefined,
+          height: selectedHeight[0],
+          weight: selectedWeight[0],
+          draftYear: selectedDraftYear[0] ? parseInt(selectedDraftYear[0], 10) : undefined,
+        };
+        const data = await fetchPlayers(params);
+        setPlayers(data);
+      } catch (e: any) {
+        setError(e?.message ?? "Erreur inconnue");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [
+    NameSearching,
+    selectedTeams,
+    selectedPosition,
+    selectedCollege,
+    selectedCountry,
+    selectedJerseyNumber,
+    selectedHeight,
+    selectedWeight,
+    selectedDraftYear,
+  ]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-5">
+    <section className="flex min-h-screen flex-col items-center justify-between p-5">
       <header className="w-full">
         <nav className="flex flex-row justify-between items-center h-16 w-full">
           <h1 className="text-4xl font-extrabold">
@@ -30,7 +92,7 @@ export default function Home() {
             }`}
             onMouseEnter={() => setFocused(true)}
             onMouseLeave={() => {
-              if (searching === "") { 
+              if (NameSearching === "") { 
                 setFocused(false);
               }
             }}
@@ -44,237 +106,97 @@ export default function Home() {
               <input
                 autoFocus
                 className="pl-2 p-1 rounded-xl transition-all duration-300 w-48 bg-white border border-gray-400"
-                placeholder="Search a player"
+                placeholder="Search a player by name"
                 onBlur={() => {
-                  if (searching === "") {
+                  if (NameSearching === "") {
                     setFocused(false);
                   } else {
                     setFocused(true);
                   }
                 }}
-                value={searching}
-                onChange={e => setSearching(e.target.value)}
+                value={NameSearching}
+                onChange={e => setNameSearching(e.target.value)}
               />
             )}
           </div>
         </nav>
 
         {/* Filter */}
-        <div className="mt-4 flex flex-row justify-start gap-4">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-xl">Filter by teams</h1>
-              <div>
-                <input
-                  autoFocus
-                  placeholder="Search a team"
-                  className="border-1 p-1"
-                  value={teamSearch}
-                  onChange={e =>
-                    setTeamSearch(NbaTeams.filter((team => team.includes(e.target.value))))
-                  }
-                />
-              </div>
-               <div className="flex flex-col h-[150px] overflow-auto">
-              {NbaTeams.filter(team => team.toLowerCase().includes(teamSearch.toLowerCase())).map(team => 
-                <button 
-                  key={team}
-                  className={`p-1 cursor-pointer text-left text-m transition-colors
-                    ${selectedTeams.includes(team)
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                  `}
-                  onClick={() => {
-                    if (selectedTeams.includes(team)) {
-                      setSelectedTeams(selectedTeams.filter(t => t !== team));
-                    } else {
-                      setSelectedTeams([...selectedTeams, team]);
-                    }
-                  }}
-                >
-                  {team}
-                </button>
-              )}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl">Filter by Countries</h1>
-               <div className="flex flex-col h-[150px] overflow-auto">
-              {Countries.map(country => 
-                <button 
-                  key={country}
-                  className={`p-1 cursor-pointer text-left text-m transition-colors
-                    ${selectedCountry.includes(country)
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                  `}
-                  onClick={() => {
-                    if (selectedCountry.includes(country)) {
-                      setSelectedCountry(selectedCountry.filter(t => t !== country));
-                    } else {
-                      setSelectedCountry([...selectedCountry, country]);
-                    }
-                  }}
-                >
-                  {country}
-                </button>
-              )}
-              </div>
-              </div>
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <FilterSection
+            title="Teams"
+            items={NbaTeams}
+            selectedItems={selectedTeams}
+            onItemClick={(item) => handleSelection(setSelectedTeams, selectedTeams, item as string)}
+          />
+          <FilterSection
+            title="Positions"
+            items={Positions}
+            selectedItems={selectedPosition}
+            onItemClick={(item) => handleSelection(setSelectedPosition, selectedPosition, item as string)}
+          />
+          <FilterSection
+            title="Heights"
+            items={Heights}
+            selectedItems={selectedHeight}
+            onItemClick={(item) => handleSelection(setSelectedHeight, selectedHeight, item as string)}
+          />
+          <FilterSection
+            title="Weights"
+            items={Weights}
+            selectedItems={selectedWeight}
+            onItemClick={(item) => handleSelection(setSelectedWeight, selectedWeight, item as number)}
+          />
+          <FilterSection
+            title="Colleges"
+            items={CollegeTeams}
+            selectedItems={selectedCollege}
+            onItemClick={(item) => handleSelection(setSelectedCollege, selectedCollege, item as string)}
+          />
+          <FilterSection
+            title="Countries"
+            items={Countries}
+            selectedItems={selectedCountry}
+            onItemClick={(item) => handleSelection(setSelectedCountry, selectedCountry, item as string)}
+          />
+          <FilterSection
+            title="Filter by Jersey Numbers"
+            items={jerseyNumbers}
+            selectedItems={selectedJerseyNumber}
+            onItemClick={(item) => handleSelection(setSelectedJerseyNumber, selectedJerseyNumber, item as string)}
+          />
 
-              <div className="flex flex-col">
-                <h1 className="text-xl">Filter by Positions</h1>
-                 <div className="flex flex-col h-[150px] overflow-auto">
-                {Object.entries(Positions).map(([key, value]) => 
-                  <button 
-                    key={key}
-                    className={`p-1 cursor-pointer text-left text-m transition-colors
-                      ${selectedPosition.includes(key)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                    `}
-                    onClick={() => {
-                      if (selectedPosition.includes(key)) {
-                        setSelectedPosition(selectedPosition.filter(t => t !== key));
-                      } else {
-                        setSelectedPosition([...selectedPosition, key]);
-                      }
-                    }}
-                  >
-                    {value}
-                  </button>
-                )}
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-xl">Filter by Heights</h1>
-                <div className="flex flex-col h-[150px] overflow-auto">
-                {Heights.map(height => 
-                  <button 
-                    key={height}
-                    className={`p-1 cursor-pointer text-left text-m transition-colors
-                      ${selectedHeight.includes(height)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                    `}
-                    onClick={() => {
-                      if (selectedHeight.includes(height)) {
-                        setSelectedHeight(selectedHeight.filter(t => t !== height));
-                      } else {
-                        setSelectedHeight([...selectedHeight, height]);
-                      }
-                    }}
-                  >
-                    {height}
-                  </button>
-                )}
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-xl">Filter by Weights</h1>
-                <div className="flex flex-col h-[150px] overflow-auto">
-                {Weights.map(weight => 
-                  <button 
-                    key={weight}
-                    className={`p-1 cursor-pointer text-left text-m transition-colors
-                      ${selectedWeight.includes(weight)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                    `}
-                    onClick={() => {
-                      if (selectedWeight.includes(weight)) {
-                        setSelectedWeight(selectedWeight.filter(t => t !== weight));
-                      } else {
-                        setSelectedWeight([...selectedWeight, weight]);
-                      }
-                    }}
-                    >
-                    {weight}
-                  </button>
-                )}
-                </div>
-              </div>
-              <div>
-                <h1 className="text-xl">Filter by Colleges</h1>
-                <div className="flex flex-col h-[150px] overflow-auto">
-                {CollegeTeams.map(college => 
-                  <button 
-                    key={college}
-                    className={`p-1 cursor-pointer text-left text-m transition-colors
-                      ${selectedCollege.includes(college)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                    `}
-                    onClick={() => {
-                      if (selectedCollege.includes(college)) {
-                        setSelectedCollege(selectedCollege.filter(t => t !== college));
-                      } else {
-                        setSelectedCollege([...selectedCollege, college]);
-                      }
-                    }}
-                  >
-                    {college}
-                  </button>
-                )}
-                </div>
-              </div>
-                <div className="flex flex-col">
-                  <h1 className="text-xl">Filter by Jersey Numbers</h1>
-                   <div className="flex flex-col h-[150px] overflow-auto">
-                  {Array.from({ length: 100 }, (_, i) => {
-                    const num = String(i);
-                    return (
-                      <button
-                        key={num}
-                        className={`p-1 cursor-pointer text-left text-m transition-colors
-                          ${selectedJerseyNumber.includes(num)
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                        `}
-                        onClick={() => {
-                          if (selectedJerseyNumber.includes(num)) {
-                            setSelectedJerseyNumber(selectedJerseyNumber.filter(t => t !== num));
-                          } else {
-                            setSelectedJerseyNumber([...selectedJerseyNumber, num]);
-                          }
-                        }}
-                      >
-                        {num}
-                      </button>
-                    );
-                  })}
-                  </div>
-                </div>
-
-                <div className="flex flex-col">
-                  <h1 className="text-xl">Filter by Draft Years</h1>
-                   <div className="flex flex-col h-[150px] overflow-auto">
-                  {Array.from({ length: 2022 - 2008 + 1 }, (_, i) => {
-                    const year = String(2008 + i);
-                    return (
-                      <button
-                        key={year}
-                        className={`p-1 cursor-pointer text-left text-m transition-colors
-                          ${selectedDraftYear.includes(year)
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-100 hover:bg-blue-500 hover:text-white'}
-                        `}
-                        onClick={() => {
-                          if (selectedDraftYear.includes(year)) {
-                            setSelectedDraftYear(selectedDraftYear.filter(t => t !== year));
-                          } else {
-                            setSelectedDraftYear([...selectedDraftYear, year]);
-                          }
-                        }}
-                      >
-                        {year}
-                      </button>
-                    );
-                  })}
-                  </div>
-                </div>
-              
-          </div>
+          <FilterSection
+            title="Filter by Draft Years"
+            items={draftYears}
+            selectedItems={selectedDraftYear}
+            onItemClick={(item) => handleSelection(setSelectedDraftYear, selectedDraftYear, item as string)}
+          />
+        </div> 
       </header>
-    </main>
+
+      <main className="w-full flex-1 flex flex-col border-1 m-4 border-gray-300 rounded-lg p-4 shadow-md">
+        {/* Player List */}
+        {loading && <p>Chargement…</p>}
+        {error && <p className="text-red-600">{error}</p>}
+        {!loading && !error && (
+          <ul className="divide-y divide-gray-200">
+            {players.map((p) => (
+              <li key={p.person_id} className="py-2 flex items-center justify-between">
+                <div>
+                  <div className="font-semibold">{p.player_first_name} {p.player_last_name}</div>
+                  <div className="text-sm text-gray-600">
+                    {p.team_name ?? "Free Agent"} • {p.position ?? "-"} • #{p.jersey_number ?? "-"}
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500">
+                  {p.height ?? "?"} • {p.weight ?? "?"}lbs • {p.country ?? "?"}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </main>
+    </section>
   );
 }

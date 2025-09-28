@@ -15,16 +15,17 @@ export const NbaTeams: string[] = [
 ];
 
 // Plus tard : 
+// afficher Forward et non F
 // Mettre ensemble C-F et F-C et si je mets forward affiché les F-C aussi etc. 
-export const Positions: { [key: string]: string } = {
- "F-G": "Forward-Guard",
-"C-F": "Center-Forward",
- "G-F": "Guard-Forward",
- "C": "Center",
- "G": "Guard",
-" F-C": "Forward-Center",
- "F":"Forward"
-}
+export const Positions: string[] = [
+  "F-G",
+  "C-F",
+  "G-F",
+  "C",
+  "G",
+  "F-C",
+  "F"
+]
 
 export const Heights: string[] = [
  "5-8",
@@ -52,9 +53,6 @@ for(let i = 159; i < 306; i++) {
   Weights.push(i);
 }
 
-// draft_year go from 2008 to 2022
-
-// jersey_number : 0 to 99
 
 export const CollegeTeams: string[]  = [
   "Mississippi State",
