@@ -33,17 +33,17 @@ public class PlayerController {
 
     @GetMapping
     public List<Player> getPlayers(
-        @RequestParam(required = false) String teamName,
-        @RequestParam(required = false) String lastName,
-        @RequestParam(required = false) String firstName,
-        @RequestParam(required = false) String position,
-        @RequestParam(required = false) String college,
-        @RequestParam(required = false) String country,
-        @RequestParam(required = false) Integer jerseyNumber,
-        @RequestParam(required = false) String teamCity,
-        @RequestParam(required = false) String height,
-        @RequestParam(required = false) Double weight,
-        @RequestParam(required = false) Integer draftYear
+        @RequestParam(required = false) List<String> teamName,
+        @RequestParam(required = false) List<String> lastName,
+        @RequestParam(required = false) List<String> firstName,
+        @RequestParam(required = false) List<String> position,
+        @RequestParam(required = false) List<String> college,
+        @RequestParam(required = false) List<String> country,
+        @RequestParam(required = false) List<Integer> jerseyNumber,
+        @RequestParam(required = false) List<String> teamCity,
+        @RequestParam(required = false) List<String> height,
+        @RequestParam(required = false) List<Double> weight,
+        @RequestParam(required = false) List<Integer> draftYear
     ) {
         // Créer un objet de critères de filtre
         PlayerFilterCriteria criteria = PlayerFilterCriteria.builder()

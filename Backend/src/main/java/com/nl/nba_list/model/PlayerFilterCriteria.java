@@ -1,20 +1,21 @@
 package com.nl.nba_list.model;
 
+import java.util.List;
 /**
  * Classe pour encapsuler les critères de filtrage des joueurs
  */
 public class PlayerFilterCriteria {
-    private String teamName;
-    private String lastName;
-    private String firstName;
-    private String position;
-    private String college;
-    private String country;
-    private Integer jerseyNumber;
-    private String teamCity;
-    private String height;
-    private Double weight;
-    private Integer draftYear;
+    private List<String> teamName;
+    private List<String> lastName;
+    private List<String> firstName;
+    private List<String> position;
+    private List<String> college;
+    private List<String> country;
+    private List<Integer> jerseyNumber;
+    private List<String> teamCity;
+    private List<String> height;
+    private List<Double> weight;
+    private List<Integer> draftYear;
 
     // Constructeur privé pour le pattern Builder
     private PlayerFilterCriteria(Builder builder) {
@@ -38,69 +39,69 @@ public class PlayerFilterCriteria {
 
     // Pattern Builder
     public static class Builder {
-        private String teamName;
-        private String lastName;
-        private String firstName;
-        private String position;
-        private String college;
-        private String country;
-        private Integer jerseyNumber;
-        private String teamCity;
-        private String height;
-        private Double weight;
-        private Integer draftYear;
+        private List<String> teamName;
+        private List<String> lastName;
+        private List<String> firstName;
+        private List<String> position;
+        private List<String> college;
+        private List<String> country;
+        private List<Integer> jerseyNumber;
+        private List<String> teamCity;
+        private List<String> height;
+        private List<Double> weight;
+        private List<Integer> draftYear;
 
-        public Builder teamName(String teamName) {
+        public Builder teamName(List<String> teamName) {
             this.teamName = teamName;
             return this;
         }
 
-        public Builder lastName(String lastName) {
+        public Builder lastName(List<String> lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public Builder firstName(String firstName) {
+        public Builder firstName(List<String> firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public Builder position(String position) {
+        public Builder position(List<String> position) {
             this.position = position;
             return this;
         }
 
-        public Builder college(String college) {
+        public Builder college(List<String> college) {
             this.college = college;
             return this;
         }
 
-        public Builder country(String country) {
+        public Builder country(List<String> country) {
             this.country = country;
             return this;
         }
 
-        public Builder jerseyNumber(Integer jerseyNumber) {
+        public Builder jerseyNumber(List<Integer> jerseyNumber) {
             this.jerseyNumber = jerseyNumber;
             return this;
         }
 
-        public Builder teamCity(String teamCity) {
+        public Builder teamCity(List<String> teamCity) {
             this.teamCity = teamCity;
             return this;
         }
 
-        public Builder height(String height) {
+        public Builder height(List<String> height) {
             this.height = height;
             return this;
         }
 
-        public Builder weight(Double weight) {
+        public Builder weight(List<Double> weight) {
             this.weight = weight;
             return this;
         }
 
-        public Builder draftYear(Integer draftYear) {
+        public Builder draftYear(List<Integer> draftYear) {
             this.draftYear = draftYear;
             return this;
         }
@@ -119,15 +120,15 @@ public class PlayerFilterCriteria {
     }
 
     // Getters
-    public String getTeamName() { return teamName; }
-    public String getLastName() { return lastName; }
-    public String getFirstName() { return firstName; }
-    public String getPosition() { return position; }
-    public String getCollege() { return college; }
-    public String getCountry() { return country; }
-    public Integer getJerseyNumber() { return jerseyNumber; }
-    public String getTeamCity() { return teamCity; }
-    public String getHeight() { return height; }
-    public Double getWeight() { return weight; }
-    public Integer getDraftYear() { return draftYear; }
+    public List<String> getTeamName() { return teamName; }
+    public List<String> getLastName() { return lastName; }
+    public List<String> getFirstName() { return firstName; }
+    public List<String> getPosition() { return position; }
+    public List<String> getCollege() { return college; }
+    public List<String> getCountry() { return country; }
+    public List<Integer> getJerseyNumber() { return jerseyNumber; }
+    public List<String> getTeamCity() { return teamCity; }
+    public List<String> getHeight() { return height; }
+    public List<Double> getWeight() { return weight; }
+    public List<Integer> getDraftYear() { return draftYear; }
 }

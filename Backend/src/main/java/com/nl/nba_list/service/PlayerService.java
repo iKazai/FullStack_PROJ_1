@@ -39,68 +39,68 @@ public class PlayerService {
         // Appliquer tous les filtres de manière chaînée
         return playerRepository.findAll().stream()
             .filter(player -> criteria.getTeamName() == null || 
-                    (player.getTeam_name() != null && player.getTeam_name().toLowerCase().contains(criteria.getTeamName().toLowerCase())))
+            criteria.getTeamName().contains(player.getTeam_name()))
             .filter(player -> criteria.getLastName() == null || 
-                    (player.getPlayer_last_name() != null && player.getPlayer_last_name().toLowerCase().contains(criteria.getLastName().toLowerCase())))
+            criteria.getLastName().contains(player.getPlayer_last_name()))
             .filter(player -> criteria.getFirstName() == null || 
-                    (player.getPlayer_first_name() != null && player.getPlayer_first_name().toLowerCase().contains(criteria.getFirstName().toLowerCase())))
+            criteria.getFirstName().contains(player.getPlayer_first_name()))
             .filter(player -> criteria.getPosition() == null || 
-                    (player.getPosition() != null && player.getPosition().toLowerCase().contains(criteria.getPosition().toLowerCase())))
+            criteria.getPosition().contains(player.getPosition()))
             .filter(player -> criteria.getCollege() == null || 
-                    (player.getCollege() != null && player.getCollege().toLowerCase().contains(criteria.getCollege().toLowerCase())))
+            criteria.getCollege().contains(player.getCollege()))
             .filter(player -> criteria.getCountry() == null || 
-                    (player.getCountry() != null && player.getCountry().toLowerCase().contains(criteria.getCountry().toLowerCase())))
+            criteria.getCountry().contains(player.getCountry()))
             .filter(player -> criteria.getJerseyNumber() == null || 
-                    (player.getJersey_number() != null && player.getJersey_number().equals(criteria.getJerseyNumber())))
+            (player.getJersey_number() != null && criteria.getJerseyNumber().contains(player.getJersey_number())))
             .filter(player -> criteria.getTeamCity() == null || 
-                    (player.getTeam_city() != null && player.getTeam_city().toLowerCase().contains(criteria.getTeamCity().toLowerCase())))
+            (player.getTeam_city() != null && criteria.getTeamCity().contains(player.getTeam_city())))
             .filter(player -> criteria.getHeight() == null || 
-                    (player.getHeight() != null && player.getHeight().equals(criteria.getHeight())))
+            (player.getHeight() != null && criteria.getHeight().contains(player.getHeight())))
             .filter(player -> criteria.getWeight() == null || 
-                    (player.getWeight() != null && player.getWeight().equals(criteria.getWeight())))
+            (player.getWeight() != null && criteria.getWeight().contains(player.getWeight())))
             .filter(player -> criteria.getDraftYear() == null || 
-                    (player.getDraft_year() != null && player.getDraft_year().equals(criteria.getDraftYear())))
+            (player.getDraft_year() != null && criteria.getDraftYear().contains(player.getDraft_year())))
             .toList();
     }
 
-    public List<Player> getPlayersFromTeam(String teamName){
+    public List<Player> getPlayersFromTeam(List<String> teamNames){
         return playerRepository.findAll().stream()
-                .filter(player -> teamName.equals(player.getTeam_name()))
+                .filter(player -> teamNames.contains(player.getTeam_name()))
                 .toList();
     }
 
-    public List<Player> getPlayerByLastName(String searchText) {
+    public List<Player> getPlayerByLastName(List<String> searchTexts) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getPlayer_last_name().toLowerCase().contains(searchText.toLowerCase()))
+                .filter(player -> searchTexts.stream().anyMatch(text -> player.getPlayer_last_name().toLowerCase().contains(text.toLowerCase())))
                 .toList();  
     }
-    public List<Player> getPlayerByFirstName(String searchText) {
+    public List<Player> getPlayerByFirstName(List<String> searchTexts) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getPlayer_first_name().toLowerCase().contains(searchText.toLowerCase()))
-                .toList();  
-    }
-
-    public List<Player> getPlayerByPosition(String searchText) {
-        return playerRepository.findAll().stream()
-                .filter(player -> player.getPosition().toLowerCase().contains(searchText.toLowerCase()))
+                .filter(player -> searchTexts.stream().anyMatch(text -> player.getPlayer_first_name().toLowerCase().contains(text.toLowerCase())))
                 .toList();  
     }
 
-    public List<Player> getPlayerByCollege(String searchText) {
+    public List<Player> getPlayerByPosition(List<String> searchTexts) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getCollege() != null && player.getCollege().toLowerCase().contains(searchText.toLowerCase()))
+                .filter(player -> searchTexts.stream().anyMatch(text -> player.getPosition().toLowerCase().contains(text.toLowerCase())))
+                .toList();
+    }
+
+    public List<Player> getPlayerByCollege(List<String> searchTexts) {
+        return playerRepository.findAll().stream()
+                .filter(player -> player.getCollege() != null && searchTexts.stream().anyMatch(text -> player.getCollege().toLowerCase().contains(text.toLowerCase())))
                 .toList();  
     }
 
-    public List<Player> getPlayerByCountry(String searchText) {
+    public List<Player> getPlayerByCountry(List<String> searchTexts) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getCountry() != null && player.getCountry().toLowerCase().contains(searchText.toLowerCase()))
-                .toList();  
+                .filter(player -> player.getCountry() != null && searchTexts.stream().anyMatch(text -> player.getCountry().toLowerCase().contains(text.toLowerCase())))
+                .toList();
     }
 
-    public List<Player> getPlayerByTeamCity(String searchText) {
+    public List<Player> getPlayerByTeamCity(List<String> searchTexts) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getTeam_city().toLowerCase().contains(searchText.toLowerCase()))
+                .filter(player -> searchTexts.stream().anyMatch(text -> player.getTeam_city().toLowerCase().contains(text.toLowerCase())))
                 .toList();  
     }
 
@@ -110,39 +110,39 @@ public class PlayerService {
                 .toList();
     }
 
-    public List<Player> getPlayerByDraftYear(Integer draftYear) {
+    public List<Player> getPlayerByDraftYear(List<Integer> draftYears) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getDraft_year() != null && player.getDraft_year().equals(draftYear))
+                .filter(player -> player.getDraft_year() != null && draftYears.contains(player.getDraft_year()))
                 .toList();
     }
 
-    public List<Player> getPlayerByDraftRound(Integer draftRound) {
+    public List<Player> getPlayerByDraftRound(List<Integer> draftRounds) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getDraft_round() != null && player.getDraft_round().equals(draftRound))
+                .filter(player -> player.getDraft_round() != null && draftRounds.contains(player.getDraft_round()))
                 .toList();
     }
 
-    public List<Player> getPlayerByDraftNumber(Integer draftNumber) {
+    public List<Player> getPlayerByDraftNumber(List<Integer> draftNumbers) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getDraft_number() != null && player.getDraft_number().equals(draftNumber))
+                .filter(player -> player.getDraft_number() != null && draftNumbers.contains(player.getDraft_number()))
                 .toList();
     }
 
-    public List<Player> getPlayerByWeight(Double weight) {
+    public List<Player> getPlayerByWeight(List<Double> weights) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getWeight() != null && player.getWeight().equals(weight))
+                .filter(player -> player.getWeight() != null && weights.contains(player.getWeight()))
                 .toList();
     }
 
-    public List<Player> getPlayerByHeight(String height) {
+    public List<Player> getPlayerByHeight(List<String> heights) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getHeight() != null && player.getHeight().equals(height))
+                .filter(player -> player.getHeight() != null && heights.contains(player.getHeight()))
                 .toList();
     }
 
-    public List<Player> getPlayerByIsDefunct(Integer isDefunct) {
+    public List<Player> getPlayerByIsDefunct(List<Integer> isDefunct) {
         return playerRepository.findAll().stream()
-                .filter(player -> player.getIs_defunct() != null && player.getIs_defunct().equals(isDefunct))
+                .filter(player -> player.getIs_defunct() != null && isDefunct.contains(player.getIs_defunct()))
                 .toList();
     }
 
