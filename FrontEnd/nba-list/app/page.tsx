@@ -17,6 +17,13 @@ export default function Home() {
   const [selectedCollege, setSelectedCollege] = useState<string[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]);
 
+  // 'hoveredPlayer' stockera l'objet complet du joueur survolé, ou 'null' si aucun n'est survolé.
+  const [hoveredPlayer, setHoveredPlayer] = useState<Player | null>(null);
+  // 'tooltipPosition' stockera les coordonnées X et Y de la souris pour positionner la boîte.
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +39,25 @@ export default function Home() {
     } else {
       setter([...currentSelection, item]);
     }
+  };
+
+  const handleMouseEnter = (event: React.MouseEvent<HTMLLIElement>, player: Player) => {
+    setHoveredPlayer(player);
+    setTooltipPosition({
+      x: event.clientX + window.scrollX, // Ajout du décalage horizontal
+      y: event.clientY + window.scrollY, // Ajout du décalage vertical
+    });
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLLIElement>) => {
+    setTooltipPosition({
+      x: event.clientX + window.scrollX, // Ajout du décalage horizontal
+      y: event.clientY + window.scrollY, // Ajout du décalage vertical
+    });
+  };
+  
+  const handleMouseLeave = () => {
+    setHoveredPlayer(null);
   };
 
   // draft_year go from 2008 to 2022
@@ -173,6 +199,9 @@ export default function Home() {
         </div> 
       </header>
 
+      {/* On ajoute 'relative' au conteneur principal si on veut positionner la boîte par rapport à lui,
+    mais pour un affichage par-dessus tout, on la laissera en 'absolute' par rapport à la page. */}
+    <div className="relative w-full">
       <main className="w-full flex-1 flex flex-col border-1 m-4 border-gray-300 rounded-lg p-4 shadow-md">
         {/* Player List */}
         {loading && <p>Chargement…</p>}
@@ -180,7 +209,14 @@ export default function Home() {
         {!loading && !error && (
           <ul className="divide-y divide-gray-200">
             {players.map((p) => (
-              <li key={p.person_id} className="py-2 flex items-center justify-between">
+              <li
+                key={p.person_id}
+                className="py-2 flex items-center justify-between cursor-default"
+                // On attache les gestionnaires d'événements à chaque <li>
+                onMouseEnter={(e) => handleMouseEnter(e, p)}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
                 <div>
                   <div className="font-semibold">{p.player_first_name} {p.player_last_name}</div>
                   <div className="text-sm text-gray-600">
@@ -195,6 +231,28 @@ export default function Home() {
           </ul>
         )}
       </main>
+
+      {/* ÉTAPE 3: Rendu conditionnel de la boîte d'informations */}
+      {hoveredPlayer && (
+        <div
+          className="absolute z-50 p-3 bg-gray-800 text-white border border-gray-600 rounded-lg shadow-xl pointer-events-none"
+          // On positionne la boîte en utilisant les coordonnées de la souris stockées dans l'état.
+          // Les "+15" permettent de décaler légèrement la boîte pour qu'elle n'apparaisse pas directement sous le curseur.
+          style={{
+            top: `${tooltipPosition.y}px`,
+            left: `${tooltipPosition.x}px`,
+            transform: 'translateY(-600%)' // Optionnel: positionne la boite au dessus du curseur
+          }}
+        >
+          <h3 className="font-bold text-lg mb-2">{hoveredPlayer.player_first_name} {hoveredPlayer.player_last_name}</h3>
+          <div className="text-sm space-y-1">
+            <p>Points: <span className="font-medium text-green-400">{hoveredPlayer.pts ?? 'N/A'}</span></p>
+            <p>Rebounds: <span className="font-medium text-blue-400">{hoveredPlayer.reb ?? 'N/A'}</span></p>
+            <p>Assists: <span className="font-medium text-yellow-400">{hoveredPlayer.ast ?? 'N/A'}</span></p>
+          </div>
+        </div>
+      )}
+    </div>
     </section>
   );
 }

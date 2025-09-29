@@ -1,7 +1,5 @@
 # TODO : 
 On développe pas trop le projet parce qu'il y en d'autres plus intéréssants
-## Le multifiltre : 
-Pour l'instant, on ne regarde que le [0] de la liste selectedItems plusieurs filtres différents ca marche
 ## Le nom des filtres : 
 Le nom des équipes et des postes ne sont pas biens
 ## Onglet stat : 
