@@ -113,10 +113,14 @@ public class PlayerFilterCriteria {
 
     // Méthode pour vérifier si aucun filtre n'est défini
     public boolean hasNoFilters() {
-        return teamName == null && lastName == null && firstName == null && 
-               position == null && college == null && 
-               country == null && jerseyNumber == null && 
-               teamCity == null && height == null && weight == null && draftYear == null;
+        return isEmpty(teamName) && isEmpty(lastName) && isEmpty(firstName) &&
+               isEmpty(position) && isEmpty(college) &&
+               isEmpty(country) && isEmpty(jerseyNumber) &&
+               isEmpty(teamCity) && isEmpty(height) && isEmpty(weight) && isEmpty(draftYear);
+    }
+
+    private boolean isEmpty(java.util.List<?> list) {
+        return list == null || list.isEmpty();
     }
 
     // Getters

@@ -25,11 +25,16 @@ export type Player = {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
 
-export async function fetchPlayers(params: Record<string, string | number | undefined> = {}): Promise<Player[]> {
+export async function fetchPlayers(
+  params: Record<string, string | number | (string | number)[] | undefined> = {}
+): Promise<Player[]> {
   const usp = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== null && v !== "") {
-      usp.append(k, String(v));
+    if (v === undefined || v === null) continue;
+    if (Array.isArray(v)) {
+      v.filter(x => x !== undefined && x !== null && x !== "").forEach(x => usp.append(k, String(x)));
+    } else {
+      if (v !== "") usp.append(k, String(v));
     }
   }
   const url = `${API_BASE}/players${usp.toString() ? `?${usp.toString()}` : ""}`;

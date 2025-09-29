@@ -36,31 +36,62 @@ public class PlayerService {
             return playerRepository.findAll();
         }
 
-        // Appliquer tous les filtres de manière chaînée
+        // Appliquer tous les filtres de manière chaînée (OR à l'intérieur d'un même champ, AND entre champs)
         return playerRepository.findAll().stream()
-            .filter(player -> criteria.getTeamName() == null || 
-            criteria.getTeamName().contains(player.getTeam_name()))
-            .filter(player -> criteria.getLastName() == null || 
-            criteria.getLastName().contains(player.getPlayer_last_name()))
-            .filter(player -> criteria.getFirstName() == null || 
-            criteria.getFirstName().contains(player.getPlayer_first_name()))
-            .filter(player -> criteria.getPosition() == null || 
-            criteria.getPosition().contains(player.getPosition()))
-            .filter(player -> criteria.getCollege() == null || 
-            criteria.getCollege().contains(player.getCollege()))
-            .filter(player -> criteria.getCountry() == null || 
-            criteria.getCountry().contains(player.getCountry()))
-            .filter(player -> criteria.getJerseyNumber() == null || 
-            (player.getJersey_number() != null && criteria.getJerseyNumber().contains(player.getJersey_number())))
-            .filter(player -> criteria.getTeamCity() == null || 
-            (player.getTeam_city() != null && criteria.getTeamCity().contains(player.getTeam_city())))
-            .filter(player -> criteria.getHeight() == null || 
-            (player.getHeight() != null && criteria.getHeight().contains(player.getHeight())))
-            .filter(player -> criteria.getWeight() == null || 
-            (player.getWeight() != null && criteria.getWeight().contains(player.getWeight())))
-            .filter(player -> criteria.getDraftYear() == null || 
-            (player.getDraft_year() != null && criteria.getDraftYear().contains(player.getDraft_year())))
+            // String contains (insensible à la casse)
+            .filter(p -> matchContains(criteria.getTeamName(), p.getTeam_name()))
+            .filter(p -> matchContains(criteria.getLastName(), p.getPlayer_last_name()))
+            .filter(p -> matchContains(criteria.getFirstName(), p.getPlayer_first_name()))
+            // String equals (insensible à la casse) pour des valeurs catégorielles
+            .filter(p -> matchEquals(criteria.getPosition(), p.getPosition()))
+            // College: contains pour être tolérant
+            .filter(p -> matchContains(criteria.getCollege(), p.getCollege()))
+            // Country: equals (insensible à la casse) pour l'exact match et l'union (ex: Senegal OU Israel)
+            .filter(p -> matchEquals(criteria.getCountry(), p.getCountry()))
+            // Numériques: égalité
+            .filter(p -> matchNumber(criteria.getJerseyNumber(), p.getJersey_number()))
+            // City: contains
+            .filter(p -> matchContains(criteria.getTeamCity(), p.getTeam_city()))
+            // Height string exacte (ex: 6-7)
+            .filter(p -> matchEquals(criteria.getHeight(), p.getHeight()))
+            // Weight/draftYear numériques
+            .filter(p -> matchNumber(criteria.getWeight(), p.getWeight()))
+            .filter(p -> matchNumber(criteria.getDraftYear(), p.getDraft_year()))
             .toList();
+    }
+
+    // Helpers de correspondance
+    private boolean isEmpty(List<?> list) {
+        return list == null || list.isEmpty();
+    }
+
+    // Correspondance OR par égalité (insensible à la casse) pour String
+    private boolean matchEquals(List<String> filters, String value) {
+        if (isEmpty(filters)) return true;
+        if (value == null) return false;
+        final String v = value.toLowerCase();
+        return filters.stream()
+                .filter(f -> f != null && !f.isEmpty())
+                .map(String::toLowerCase)
+                .anyMatch(v::equals);
+    }
+
+    // Correspondance OR par inclusion (contains insensible à la casse) pour String
+    private boolean matchContains(List<String> filters, String value) {
+        if (isEmpty(filters)) return true;
+        if (value == null) return false;
+        final String v = value.toLowerCase();
+        return filters.stream()
+                .filter(f -> f != null && !f.isEmpty())
+                .map(String::toLowerCase)
+                .anyMatch(v::contains);
+    }
+
+    // Correspondance OR pour Number (égalité)
+    private <N extends Number> boolean matchNumber(List<N> filters, N value) {
+        if (isEmpty(filters)) return true;
+        if (value == null) return false;
+        return filters.stream().anyMatch(f -> f != null && value.equals(f));
     }
 
     public List<Player> getPlayersFromTeam(List<String> teamNames){

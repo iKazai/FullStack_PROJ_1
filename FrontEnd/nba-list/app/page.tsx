@@ -44,18 +44,16 @@ export default function Home() {
       setLoading(true);
       setError(null);
       try {
-        const params: Record<string, string | number | undefined> = {
-          teamName: selectedTeams[0],
+        const params: Record<string, string | number | (string | number)[] | undefined> = {
+          teamName: selectedTeams,
           lastName: NameSearching || undefined,
-          firstName: undefined, // could be set if you split first/last names
-          position: selectedPosition[0],
-          college: selectedCollege[0],
-          country: selectedCountry[0],
-          jerseyNumber: selectedJerseyNumber[0] ? parseInt(selectedJerseyNumber[0], 10) : undefined,
-          teamCity: undefined,
-          height: selectedHeight[0],
-          weight: selectedWeight[0],
-          draftYear: selectedDraftYear[0] ? parseInt(selectedDraftYear[0], 10) : undefined,
+          position: selectedPosition,
+          college: selectedCollege,
+          country: selectedCountry,
+          jerseyNumber: selectedJerseyNumber.map(j => parseInt(j, 10)).filter(n => !Number.isNaN(n)),
+          height: selectedHeight,
+          weight: selectedWeight,
+          draftYear: selectedDraftYear.map(y => parseInt(y, 10)).filter(n => !Number.isNaN(n)),
         };
         const data = await fetchPlayers(params);
         setPlayers(data);
