@@ -1,6 +1,7 @@
 url = 'https://www.nba.com/players'
 from playwright.sync_api import Page, sync_playwright
 import json
+from pathlib import Path
 
 def getRightHTML():
     with sync_playwright() as p:
@@ -24,7 +25,10 @@ if __name__ == "__main__":
 
         extracted_data = "{" + html[begin:end - 1] + "}"
 
-        with open("DataScraping/players.json", "w", encoding="utf-8") as f:
+        # write the output next to this script regardless of current working dir
+        out_path = Path(__file__).resolve().parent / "players.json"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("w", encoding="utf-8") as f:
             f.write(extracted_data)
 
 
